@@ -68,10 +68,10 @@ def train_step(batch):
     states, actions, rewards, new_states, is_terminals = zip(*batch)
 
     # convert batch to tensors
-    states = torch.stack(states).to(device)
+    states = torch.stack(states)
     actions = torch.tensor(actions, dtype=torch.long).to(device)
     rewards = torch.tensor(rewards, dtype=torch.float32).to(device)
-    new_states = torch.stack(new_states).to(device)
+    new_states = torch.stack(new_states)
     is_terminals = torch.tensor(is_terminals, dtype=torch.bool).to(device)
 
     # gradient descent
@@ -140,7 +140,7 @@ def main(train):
             if actions_since_decision == k or is_terminal:
                 # add transition
                 prev_state = state
-                state = torch.tensor([observed for frame_state in compounded_state for observed in frame_state])
+                state = torch.tensor([observed for frame_state in compounded_state for observed in frame_state]).to(device)
                 if prev_state is not None:
                     D.append((prev_state, prev_action, total_reward_from_action, state, is_terminal))
                 

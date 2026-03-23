@@ -59,10 +59,10 @@ def train_step(batch):
     states, actions, rewards, new_states, is_terminals = zip(*batch)
 
     # convert batch to tensors
-    states = torch.stack(states).to(device)
+    states = torch.stack(states)
     actions = torch.tensor(actions, dtype=torch.long).to(device)
     rewards = torch.tensor(rewards, dtype=torch.float32).to(device)
-    new_states = torch.stack(new_states).to(device)
+    new_states = torch.stack(new_states)
     is_terminals = torch.tensor(is_terminals, dtype=torch.bool).to(device)
 
     # compute targets and actual
@@ -174,13 +174,13 @@ def main(train, play):
 
             # update replay buffer
             if (actions_since_decision == k or is_terminal) and state is not None:
-                new_state = torch.tensor([state_var for obs in compounded_state for state_var in obs], dtype=torch.float32)
+                new_state = torch.tensor([state_var for obs in compounded_state for state_var in obs], dtype=torch.float32).to(device)
                 transition = (state, action, reward_since_decision, new_state, is_terminal)
                 D.append(transition)
                 reward_since_decision = 0
                 state = new_state
             elif actions_since_decision == k:
-                state = torch.tensor([state_var for obs in compounded_state for state_var in obs], dtype=torch.float32)
+                state = torch.tensor([state_var for obs in compounded_state for state_var in obs], dtype=torch.float32).to(device)
             
             # update DQN
             if train and actions_since_decision == k and len(D) == REPLAY_BUFFER_SIZE:
